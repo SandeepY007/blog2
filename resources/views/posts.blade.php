@@ -12,11 +12,10 @@
 <body>
     <article>
         <article>
-            <?= $post; ?> 
+            <?php foreach ($posts as $post ): ?>
+            <h1>{{ $post->title }}</h1>
+            <?php endforeach ?>
         </article>
-        <a href="/">
-            <h1>Go Back</h1>
-        </a>
     </article>
 </body>
 

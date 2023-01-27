@@ -1,22 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Blog</title>
-    <link rel="stylesheet" href="/app.css">
-</head>
-
-<body>
-    <article>
-        <article>
-            <?php foreach ($posts as $post ): ?>
-            <h1>{{ $post->title }}</h1>
-            <?php endforeach ?>
-        </article>
-    </article>
-</body>
-
-</html>
+<x-layout>
+    @include('_header')
+    <main class="max-w-6xl mx-auto mt-6 lg:mt-20 space-y-6">
+        @if ($posts->count())
+            <x-post-featured-card :post="$posts[0]" />
+            @if ($posts->count() > 1)
+                <div class="lg:grid lg:grid-cols-6">
+                    @foreach ($posts->skip(1) as $post)
+                    
+                        <x-post-card :post="$post" class="{{ $loop->iteration < 3 ? 'col-span-3' : 'col-span-2' }}" />
+                    @endforeach
+                </div>
+            @endif
+        @else
+            <p class="text-center">No post Yet</p>
+        @endif
+    </main>
+</x-layout>

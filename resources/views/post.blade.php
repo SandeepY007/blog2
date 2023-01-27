@@ -1,23 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Blog</title>
-    <link rel="stylesheet" href="/app.css">
-</head>
-
-<body>
+<x-layout>
     <article>
         <article>
-            <?= $post; ?> 
+            <h1>{{ $post->title }}</h1>
+            <p>Written By <a href="/authors/{{ $post->author->username }}">{{ $post->author->name }}</a> :- <a
+                    href="#">{{ $post->category->name }}</a></p>
+            <p>{!! $post->body !!}</p>
         </article>
         <a href="/">
             <h1>Go Back</h1>
         </a>
     </article>
-</body>
-
-</html>
+</x-layout>

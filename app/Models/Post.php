@@ -2,38 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\File;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\models\Category;
 
-class Post
+class Post extends Model
 {
-    public $title;
-    public $excerpt;
-    public $body;
-    public $date;
-    public $slug;
+    use HasFactory;
 
-    public function __construct($title, $excerpt, $body, $date, $slug)      
-    {
-        $this->title = $title;
-        $this->excerpt = $excerpt;
-        $this->body = $body;
-        $this->date = $date;
-        $this->slug = $slug;
+    protected $fillable = ['title', 'excerpt', 'body'];
 
-    }
-    public static function all()
+    protected $with = ['category', 'author'];
+
+    public function getRouteKeyName()
     {
-        $files=File::files(resource_path('posts/'));
-        return array_map(fn($file) => $file->getContents(), $files);
+        return 'slug';
     }
 
-    public static function find($slug)
+    public function category()
     {
-        if (!file_exists($path = resource_path("posts/{$slug}.html"))) {
-            throw new ModelNotFoundException;
-        }
+        return $this->belongsTo(Category::class);
+    }
 
-        return cache()->remember("posts.{$slug}", 1200, fn () => file_get_contents($path));
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

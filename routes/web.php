@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
@@ -18,28 +20,27 @@ use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 Route::get('/', function () {
 
-    $files=File::files(resource_path('posts/'));
-    $post = [];
-    foreach ($files as $file) {
-        $document=YamlFrontMatter::parseFile($file);
+    $post = Post::all(); // solving th n + 1 problem
 
-        $post[] = new Post(
-            $document->title,
-            $document->excerpt,
-            $document->body(),
-            $document->date ,
-            $document->slug
-        );
-    }
-     
-     return view('posts',[
-         'posts'=>$post 
-     ]);
+    return view('posts', [
+        'posts' => $post
+    ]);
 });
 
-Route::get('/posts/{post}', function ($slug) {
-    $post = Post::find($slug);
+Route::get('/posts/{post}', function (Post $post) {
     return view('post', [
         'post' => $post
     ]);
-})->where('post', '[A-z_/-]+');
+});
+
+Route::get('categories/{category}', function (Category $category) {
+    return view('posts', [
+        'posts' => $category->posts  //solve n+1 ->load('category', 'author')
+    ]);
+});
+
+Route::get('authors/{author:username}', function (User $author) {
+    return view('posts', [
+        'posts' => $author->posts   // solve n+1 ->load('category', 'author')
+    ]);
+});

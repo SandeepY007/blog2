@@ -19,13 +19,43 @@ class Post extends Model
         return 'slug';
     }
 
-    public function scopeFilter($query)
+    public function scopeFilter($query, array $filters)
     {
-        if (request('search')) {
+        $query->when(
+            $filters['search'] ?? false,
+            fn ($query, $search) =>
+            $query->where(
+                fn ($query) =>
+                $query
+                    ->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('body', 'like', '%' . $search . '%')
+            )
+
+        );
+
+        $query->when(
+            $filters['search'] ?? false,
+            fn ($query, $category) =>
             $query
-                ->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('body', 'like', '%' . request('search') . '%');
-        }
+                ->whereHas('category', fn ($query) => $query
+                    ->where('slug', $category))
+
+            // ->whereExists(
+            //     fn($query) =>
+            //     $query->from('categories')
+            //         ->whereColumn('categories.id', 'posts.category_id')
+            //         ->where('categories.slug', $category)
+            // );
+
+        );
+
+        $query->when(
+            $filters['author'] ?? false,
+            fn ($query, $author) =>
+            $query
+                ->whereHas('author', fn ($query) => $query
+                    ->where('username', $author))
+        );
     }
 
     public function category()

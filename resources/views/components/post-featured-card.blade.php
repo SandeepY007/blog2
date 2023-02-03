@@ -19,7 +19,7 @@
                     </a>
 
                     <span class="mt-2 block text-gray-400 text-xs">
-                        Published <time>1 day ago</time>
+                        {{ $post->created_at->diffForHumans() }}
                     </span>
                 </div>
             </header>
@@ -36,7 +36,9 @@
                 <div class="flex items-center text-sm">
                     <img src="/images/lary-avatar.svg" alt="Lary avatar">
                     <div class="ml-3">
-                        <h5 class="font-bold">{{ $post->author->name }}</h5>
+                        <a href="/authors/{{ $post->author->username }}">
+                            <h5 class="font-bold">{{ $post->author->name }}</h5>
+                        </a>
                         <h6>Mascot at Laracasts</h6>
                     </div>
                 </div>

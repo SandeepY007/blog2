@@ -11,20 +11,14 @@ class PostController extends Controller
     public function index()
     {
 
-        return view('posts', [
-            'posts' => $this->getPost(),  // solving th n + 1 problem
-            'categories' => Category::all()
+        return view('posts.index', [
+            'posts' => Post::latest()->filter(request(['search', 'category', 'author']))->simplePaginate(6), // solving the n + 1 problem on Post Model
         ]);
     }
     public function show(Post $post)
     {
-        return view('post', [
+        return view('posts.show', [
             'post' => $post
         ]);
-    }
-
-    public function getPost()
-    {
-        return Post::latest()->filter()->get();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\RegistrationController;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
@@ -22,16 +23,5 @@ use Spatie\YamlFrontMatter\YamlFrontMatter;
 Route::get('/',[PostController::class, 'index'] )->name('home');
 Route::get('/posts/{post}', [PostController::class, 'show']);
 
-Route::get('categories/{category}', function (Category $category) {
-    return view('posts', [
-        'posts' => $category->posts,  //solve n+1 ->load('category', 'author')
-        'currentCategory' => $category,
-        'categories' => Category::all()
-    ]);
-});
-
-Route::get('authors/{author:username}', function (User $author) {
-    return view('posts', [
-        'posts' => $author->posts   // solve n+1 ->load('category', 'author')
-    ]);
-});
+Route::get('/register', [RegistrationController::class, 'register']);
+Route::post('/register', [RegistrationController::class, 'store']);
